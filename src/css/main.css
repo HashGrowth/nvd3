@@ -108,3 +108,7 @@ svg.nvd3-svg {
 .vertical-line {
     cursor: pointer;
 }
+
+.hide {
+    display: none;
+}

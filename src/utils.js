@@ -743,6 +743,29 @@ nv.utils.pointIsInArc = function(pt, ptData, d3Arc) {
 };
 
 
+nv.utils.isNear = function($element, distance, event) {
+    var left = $element.offset().left - distance,
+        right = left + $element.width() + (2 * distance),
+        x = event.pageX;
+    return (x > left && x < right);
+}
+
+
+nv.utils.hideHoverDiv = function(div, event) {
+    var eventValue;
+    $('#hoverText p', div).each(function() {
+        var $this = $(this);
+        if ($this.is(':visible')) {
+            eventValue = ($this.data().event);
+        }
+    });
+    if (eventValue !== undefined) {
+        if (!nv.utils.isNear($("[data-value = '" + eventValue + "']", div), 80, event)) {
+            $('#hoverText', div).addClass("hide");
+        }
+    }
+}
+
 /*
     add specific events occured  by adding vertical line on x-axis 
     show popup on mouseenter event
@@ -761,10 +784,8 @@ nv.utils.addEvents = function(container, response, chart) {
         tooltipDiv;
 
     $(container).append($("<div>")
-        .attr({
-            "style": "display:none",
-            "id": "hoverText"
-        }));
+        .addClass("hide")
+        .attr("id", "hoverText"));
 
     tooltipDiv = $("#hoverText", $(container));
     tooltipDiv.html("");
@@ -800,11 +821,15 @@ nv.utils.addEvents = function(container, response, chart) {
             event_date = $(this).attr("data-value");
         $("#hoverText p", container).hide();
         $("[data-event = '" + event_date + "']", container).show();
-        $("#hoverText", container).show()
+        $("#hoverText", container).removeClass("hide")
             .css({
                 position: 'absolute',
                 left: x - 120,
                 top: y - 60
             });
     });
+    $(container).on('mousemove', function(event) {
+        nv.utils.hideHoverDiv($(container), event);
+    });
+
 }
