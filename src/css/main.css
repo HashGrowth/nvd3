@@ -89,3 +89,22 @@ svg.nvd3-svg {
         fill-opacity: 1;
     }
 }
+
+/**********
+*  HoverText 
+*/
+#hoverText {
+    position: absolute;
+    top: 50%;
+    left: 55%;
+    transform: translate(-50%, -50%);
+    width: 180px;
+    padding: 5px;
+    background-color: white;
+    border: 1px solid #adadad;
+    border-radius: 3px;
+}
+
+.vertical-line {
+    cursor: pointer;
+}
