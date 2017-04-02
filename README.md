@@ -1,15 +1,15 @@
-## addEvents in NVD3
+## `addEvents` in NVD3
 
-This repository is extended from [novus/nvd3](https://github.com/novus/nvd3).
+This repository is extended from [novus/nvd3](https://github.com/novus/nvd3). Before moving ahead,
+we highly recommend to go through [README.md](https://github.com/novus/nvd3/#nvd3---a-reusable-d3-charting-library) of [novus/nvd3](https://github.com/novus/nvd3) for usage and learning NVD3.
 
-It has one additional functionality `addEvents` for showing events by adding a vertical line, which on hover event displays a popup showing event's description on graph.
+It has one additional functionality `addEvents` for showing events by adding a vertical line, which on hover event displays a popup showing event's description on graph. You can read more about why we built this function on our [blog]().
 
 ## Requirements
-* d3.js (NVD3 is dependent on d3.js)
-* jQuery (addEvents feature requires jQuery)
+* [d3.js](https://d3js.org/) (NVD3 is dependent on d3.js)
+* [jQuery](https://jquery.com/) (addEvents feature requires jQuery)
 
-## Usage 
-
+## Usage
 ```
     nv.utils.addEvents(divId, eventsList, chart);
 
@@ -50,15 +50,17 @@ nv.addGraph(function() {
 });
 
 ```
+Checkout the [examples/lineChart.html](https://github.com/HashGrowth/nvd3/blob/master/examples/lineChart.html) for complete code.
 
 ## To Do:
-* Remove the jQuery dependency, such that the only library required is d3.js. (Enhancement)
+* Remove the jQuery dependency, such that the only library required is d3.js.
+* options to change look and feel of vertical line and popups
 
 ## Frequently Asked Questions:
 * **How to learn NVD3?**
 
   Checkout [NVD3](http://nvd3.org/) [examples](http://nvd3.org/examples/index.html) for coding your first chart. 
 
-* **Why did you not create a PR for extended feature?**
+* **Why did you not send a PR for extended feature to novus/nvd3?**
 
-  [Robin Hu](https://github.com/robinfhu) (core contibuter of NVD3) [commented](https://github.com/novus/nvd3/issues/1063#issuecomment-110208894) on the issue([#1063](https://github.com/novus/nvd3/issues/1063)) created for extending NVD3 that extending basically involves forking the NVD3 repo and just adding the functionality you need into the code directly. We don't have that many 'hooks' into the rendering logic unfortunately. It's a good chance to learn how NVD3 works too! 
+  [Robin Hu](https://github.com/robinfhu) (Frontend Software Engineer at Novus Partners) [commented](https://github.com/novus/nvd3/issues/1063#issuecomment-110208894) on issue [#1063](https://github.com/novus/nvd3/issues/1063) (titled _"Extending charts?"_) that the officially recommended way to extend NVD3 is by forking the NVD3 repo and just adding the functionality we need into the code directly.

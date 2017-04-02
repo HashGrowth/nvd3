@@ -742,7 +742,10 @@ nv.utils.pointIsInArc = function(pt, ptData, d3Arc) {
         (theta1 <= angle) && (angle <= theta2);
 };
 
-
+/*
+    checks distance between cursor and element and returns
+    true if it is less than distance provided as argument
+*/
 nv.utils.isNear = function($element, distance, event) {
     var left = $element.offset().left - distance,
         right = left + $element.width() + (2 * distance),
@@ -750,29 +753,38 @@ nv.utils.isNear = function($element, distance, event) {
     return (x > left && x < right);
 }
 
-
+/*
+    hides event description popup 
+    when cursor is at minimum distance of 80
+*/
 nv.utils.hideHoverDiv = function(div, event) {
     var eventValue;
+    // checks if any of event description is visible
     $('#hoverText p', div).each(function() {
         var $this = $(this);
         if ($this.is(':visible')) {
             eventValue = ($this.data().event);
         }
     });
+
+    /* if eventValue is defined it will 
+     check distance between cursor and vertical line
+    */
     if (eventValue !== undefined) {
         if (!nv.utils.isNear($("[data-value = '" + eventValue + "']", div), 80, event)) {
+            // add class hide if distance is more than 80
             $('#hoverText', div).addClass("hide");
         }
     }
 }
 
 /*
-    add specific events occured  by adding vertical line on x-axis 
+    add specific events occurred to chart 
+    by adding vertical line on x-axis,
     show popup on mouseenter event
     and hide it on mouseleave event
-
 */
-nv.utils.addEvents = function(container, response, chart) {
+nv.utils.addEvents = function(container, eventsList, chart) {
     var xScale = chart.xAxis.scale(),
         //calculate the yScale
         yScale = chart.yAxis.scale(),
@@ -781,20 +793,21 @@ nv.utils.addEvents = function(container, response, chart) {
         y0 = yScale(chart.yAxis.domain()[0]) + top,
         y1 = yScale(chart.yAxis.domain()[1]) + top,
         svg = d3.select((container + " svg")),
-        tooltipDiv;
+        tooltipDiv,
+        $container = $(container);
 
-    $(container).append($("<div>")
+    $container.append($("<div>")
         .addClass("hide")
         .attr("id", "hoverText"));
 
-    tooltipDiv = $("#hoverText", $(container));
+    tooltipDiv = $("#hoverText", $container);
     tooltipDiv.html("");
 
-    for (event in response) {
+    for (event in eventsList) {
         var p = $("<p>").attr("data-event", event),
             pHtml = "";
-        for (var j = 0; j < response[event].length; j++) {
-            pHtml += response[event][j];
+        for (var j = 0; j < eventsList[event].length; j++) {
+            pHtml += eventsList[event][j];
         }
         p.html(pHtml);
         tooltipDiv.append(p);
@@ -815,21 +828,20 @@ nv.utils.addEvents = function(container, response, chart) {
                 }
             });
     }
-    $(container).on("mouseenter", ".vertical-line", function(event) {
-        var y = event.pageY,
-            x = event.pageX,
-            event_date = $(this).attr("data-value");
-        $("#hoverText p", container).hide();
-        $("[data-event = '" + event_date + "']", container).show();
-        $("#hoverText", container).removeClass("hide")
-            .css({
-                position: 'absolute',
-                left: x - 120,
-                top: y - 60
-            });
-    });
-    $(container).on('mousemove', function(event) {
-        nv.utils.hideHoverDiv($(container), event);
-    });
-
+    $container.on("mouseenter", ".vertical-line", function(event) {
+            var y = event.pageY,
+                x = event.pageX,
+                event_date = $(this).attr("data-value");
+            $("#hoverText p", container).hide();
+            $("[data-event = '" + event_date + "']", container).show();
+            $("#hoverText", container).removeClass("hide")
+                .css({
+                    position: 'absolute',
+                    left: x - 120,
+                    top: y - 60
+                });
+        })
+        .on('mousemove', function(event) {
+            nv.utils.hideHoverDiv($container, event);
+        });
 }
