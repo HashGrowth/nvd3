@@ -1,4 +1,4 @@
-/* nvd3 version 1.8.5-dev (https://github.com/novus/nvd3) 2017-02-15 */
+/* nvd3 version 1.8.5-dev (https://github.com/novus/nvd3) 2017-04-02 */
 (function(){
 
 // set up main nv object
@@ -878,8 +878,6 @@ nv.models.tooltip = function() {
     nv.utils.initOptions(nvtooltip);
     return nvtooltip;
 };
-
-
 /*
 Gets the browser window size
 
@@ -887,7 +885,7 @@ Returns object with height and width properties
  */
 nv.utils.windowSize = function() {
     // Sane defaults
-    var size = {width: 640, height: 480};
+    var size = { width: 640, height: 480 };
 
     // Most recent browsers use
     if (window.innerWidth && window.innerHeight) {
@@ -897,9 +895,9 @@ nv.utils.windowSize = function() {
     }
 
     // IE can use depending on mode it is in
-    if (document.compatMode=='CSS1Compat' &&
+    if (document.compatMode == 'CSS1Compat' &&
         document.documentElement &&
-        document.documentElement.offsetWidth ) {
+        document.documentElement.offsetWidth) {
 
         size.width = document.documentElement.offsetWidth;
         size.height = document.documentElement.offsetHeight;
@@ -965,16 +963,16 @@ nv.utils.getColor = function(color) {
     if (color === undefined) {
         return nv.utils.defaultColor();
 
-    //if passed an array, turn it into a color scale
-    } else if(nv.utils.isArray(color)) {
+        //if passed an array, turn it into a color scale
+    } else if (nv.utils.isArray(color)) {
         var color_scale = d3.scale.ordinal().range(color);
         return function(d, i) {
             var key = i === undefined ? d : i;
             return d.color || color_scale(key);
         };
 
-    //if passed a function or scale, return it, or whatever it may be
-    //external libs, such as angularjs-nvd3-directives use this
+        //if passed a function or scale, return it, or whatever it may be
+        //external libs, such as angularjs-nvd3-directives use this
     } else {
         //can't really help it if someone passes rubbish as color
         return color;
@@ -998,7 +996,9 @@ looks for a corresponding color from the dictionary
 */
 nv.utils.customTheme = function(dictionary, getKey, defaultColors) {
     // use default series.key if getKey is undefined
-    getKey = getKey || function(series) { return series.key };
+    getKey = getKey || function(series) {
+        return series.key
+    };
     defaultColors = defaultColors || d3.scale.category20().range();
 
     // start at end of default color list and walk back to index 0
@@ -1059,9 +1059,9 @@ For when we want to approximate the width in pixels for an SVG:text element.
 Most common instance is when the element is in a display:none; container.
 Forumla is : text.length * font-size * constant_factor
 */
-nv.utils.calcApproxTextWidth = function (svgTextElem) {
+nv.utils.calcApproxTextWidth = function(svgTextElem) {
     if (nv.utils.isFunction(svgTextElem.style) && nv.utils.isFunction(svgTextElem.text)) {
-        var fontSize = parseInt(svgTextElem.style("font-size").replace("px",""), 10);
+        var fontSize = parseInt(svgTextElem.style("font-size").replace("px", ""), 10);
         var textLength = svgTextElem.text().length;
         return nv.utils.NaNtoZero(textLength * fontSize * 0.5);
     }
@@ -1073,11 +1073,7 @@ nv.utils.calcApproxTextWidth = function (svgTextElem) {
 Numbers that are undefined, null or NaN, convert them to zeros.
 */
 nv.utils.NaNtoZero = function(n) {
-    if (!nv.utils.isNumber(n)
-        || isNaN(n)
-        || n === null
-        || n === Infinity
-        || n === -Infinity) {
+    if (!nv.utils.isNumber(n) || isNaN(n) || n === null || n === Infinity || n === -Infinity) {
 
         return 0;
     }
@@ -1087,7 +1083,7 @@ nv.utils.NaNtoZero = function(n) {
 /*
 Add a way to watch for d3 transition ends to d3
 */
-d3.selection.prototype.watchTransition = function(renderWatch){
+d3.selection.prototype.watchTransition = function(renderWatch) {
     var args = [this].concat([].slice.call(arguments, 1));
     return renderWatch.transition.apply(renderWatch, args);
 };
@@ -1107,10 +1103,10 @@ nv.utils.renderWatch = function(dispatch, duration) {
 
     this.models = function(models) {
         models = [].slice.call(arguments, 0);
-        models.forEach(function(model){
+        models.forEach(function(model) {
             model.__rendered = false;
-            (function(m){
-                m.dispatch.on('renderEnd', function(arg){
+            (function(m) {
+                m.dispatch.on('renderEnd', function(arg) {
                     m.__rendered = true;
                     self.renderEnd('model');
                 });
@@ -1120,7 +1116,7 @@ nv.utils.renderWatch = function(dispatch, duration) {
                 renderStack.push(model);
             }
         });
-    return this;
+        return this;
     };
 
     this.reset = function(duration) {
@@ -1146,13 +1142,19 @@ nv.utils.renderWatch = function(dispatch, duration) {
 
         if (duration === 0) {
             selection.__rendered = true;
-            selection.delay = function() { return this; };
-            selection.duration = function() { return this; };
+            selection.delay = function() {
+                return this;
+            };
+            selection.duration = function() {
+                return this;
+            };
             return selection;
         } else {
             if (selection.length === 0) {
                 selection.__rendered = true;
-            } else if (selection.every( function(d){ return !d.length; } )) {
+            } else if (selection.every(function(d) {
+                    return !d.length;
+                })) {
                 selection.__rendered = true;
             } else {
                 selection.__rendered = false;
@@ -1162,7 +1164,7 @@ nv.utils.renderWatch = function(dispatch, duration) {
             return selection
                 .transition()
                 .duration(duration)
-                .each(function(){ ++n; })
+                .each(function() {++n; })
                 .each('end', function(d, i) {
                     if (--n === 0) {
                         selection.__rendered = true;
@@ -1173,8 +1175,10 @@ nv.utils.renderWatch = function(dispatch, duration) {
     };
 
     this.renderEnd = function() {
-        if (renderStack.every( function(d){ return d.__rendered; } )) {
-            renderStack.forEach( function(d){ d.__rendered = false; });
+        if (renderStack.every(function(d) {
+                return d.__rendered;
+            })) {
+            renderStack.forEach(function(d) { d.__rendered = false; });
             dispatch.renderEnd.apply(this, arguments);
         }
     }
@@ -1187,7 +1191,7 @@ Takes multiple objects and combines them into the first one (dst)
 example:  nv.utils.deepExtend({a: 1}, {a: 2, b: 3}, {c: 4});
 gives:  {a: 2, b: 3, c: 4}
 */
-nv.utils.deepExtend = function(dst){
+nv.utils.deepExtend = function(dst) {
     var sources = arguments.length > 1 ? [].slice.call(arguments, 1) : [];
     sources.forEach(function(source) {
         for (var key in source) {
@@ -1208,33 +1212,35 @@ nv.utils.deepExtend = function(dst){
 /*
 state utility object, used to track d3 states in the models
 */
-nv.utils.state = function(){
+nv.utils.state = function() {
     if (!(this instanceof nv.utils.state)) {
         return new nv.utils.state();
     }
     var state = {};
     var _self = this;
-    var _setState = function(){};
-    var _getState = function(){ return {}; };
+    var _setState = function() {};
+    var _getState = function() {
+        return {};
+    };
     var init = null;
     var changed = null;
 
     this.dispatch = d3.dispatch('change', 'set');
 
-    this.dispatch.on('set', function(state){
+    this.dispatch.on('set', function(state) {
         _setState(state, true);
     });
 
-    this.getter = function(fn){
+    this.getter = function(fn) {
         _getState = fn;
         return this;
     };
 
     this.setter = function(fn, callback) {
         if (!callback) {
-            callback = function(){};
+            callback = function() {};
         }
-        _setState = function(state, update){
+        _setState = function(state, update) {
             fn(state);
             if (update) {
                 callback();
@@ -1243,12 +1249,12 @@ nv.utils.state = function(){
         return this;
     };
 
-    this.init = function(state){
+    this.init = function(state) {
         init = init || {};
         nv.utils.deepExtend(init, state);
     };
 
-    var _set = function(){
+    var _set = function() {
         var settings = _getState();
 
         if (JSON.stringify(settings) === JSON.stringify(state)) {
@@ -1265,7 +1271,7 @@ nv.utils.state = function(){
         return true;
     };
 
-    this.update = function(){
+    this.update = function() {
         if (init) {
             _setState(init, false);
             init = null;
@@ -1291,7 +1297,7 @@ chart.options = nv.utils.optionsFunc.bind(chart);
 */
 nv.utils.optionsFunc = function(args) {
     if (args) {
-        d3.map(args).forEach((function(key,value) {
+        d3.map(args).forEach((function(key, value) {
             if (nv.utils.isFunction(this[key])) {
                 this[key](value);
             }
@@ -1351,7 +1357,7 @@ nv.utils.initOption = function(chart, name) {
     if (chart._calls && chart._calls[name]) {
         chart[name] = chart._calls[name];
     } else {
-        chart[name] = function (_) {
+        chart[name] = function(_) {
             if (!arguments.length) return chart._options[name];
             chart._overrides[name] = true;
             chart._options[name] = _;
@@ -1392,7 +1398,9 @@ Also use _d3options so we can track what we inherit for documentation and chaine
 nv.utils.inheritOptionsD3 = function(target, d3_source, oplist) {
     target._d3options = oplist.concat(target._d3options || []);
     // Find unique d3 options (string) and update d3options
-    target._d3options = (target._d3options || []).filter(function(item, i, ar){ return ar.indexOf(item) === i; });
+    target._d3options = (target._d3options || []).filter(function(item, i, ar) {
+        return ar.indexOf(item) === i;
+    });
     oplist.unshift(d3_source);
     oplist.unshift(target);
     d3.rebind.apply(this, oplist);
@@ -1423,9 +1431,10 @@ Replaces d3.svg.symbol so that we can look both there and our own map
 nv.utils.symbol = function() {
     var type,
         size = 64;
-    function symbol(d,i) {
-        var t = type.call(this,d,i);
-        var s = size.call(this,d,i);
+
+    function symbol(d, i) {
+        var t = type.call(this, d, i);
+        var s = size.call(this, d, i);
         if (d3.svg.symbolTypes.indexOf(t) !== -1) {
             return d3.svg.symbol().type(t).size(s)();
         } else {
@@ -1472,7 +1481,7 @@ nv.utils.inheritOptions = function(target, source) {
 Runs common initialize code on the svg before the chart builds
 */
 nv.utils.initSVG = function(svg) {
-    svg.classed({'nvd3-svg':true});
+    svg.classed({ 'nvd3-svg': true });
 };
 
 
@@ -1496,14 +1505,14 @@ nv.utils.sanitizeWidth = function(width, container) {
 Calculate the available height for a chart.
 */
 nv.utils.availableHeight = function(height, container, margin) {
-    return Math.max(0,nv.utils.sanitizeHeight(height, container) - margin.top - margin.bottom);
+    return Math.max(0, nv.utils.sanitizeHeight(height, container) - margin.top - margin.bottom);
 };
 
 /*
 Calculate the available width for a chart.
 */
 nv.utils.availableWidth = function(width, container, margin) {
-    return Math.max(0,nv.utils.sanitizeWidth(width, container) - margin.left - margin.right);
+    return Math.max(0, nv.utils.sanitizeWidth(width, container) - margin.left - margin.right);
 };
 
 /*
@@ -1516,8 +1525,8 @@ nv.utils.noData = function(chart, container) {
         data = (noData == null) ? ["No Data Available."] : [noData],
         height = nv.utils.availableHeight(null, container, margin),
         width = nv.utils.availableWidth(null, container, margin),
-        x = margin.left + width/2,
-        y = margin.top + height/2;
+        x = margin.left + width / 2,
+        y = margin.top + height / 2;
 
     //Remove any previously created chart components
     container.selectAll('g').remove();
@@ -1532,13 +1541,15 @@ nv.utils.noData = function(chart, container) {
     noDataText
         .attr('x', x)
         .attr('y', y)
-        .text(function(t){ return t; });
+        .text(function(t) {
+            return t;
+        });
 };
 
 /*
  Wrap long labels.
  */
-nv.utils.wrapTicks = function (text, width) {
+nv.utils.wrapTicks = function(text, width) {
     text.each(function() {
         var text = d3.select(this),
             words = text.text().split(/\s+/).reverse(),
@@ -1565,7 +1576,7 @@ nv.utils.wrapTicks = function (text, width) {
 /*
 Check equality of 2 array
 */
-nv.utils.arrayEquals = function (array1, array2) {
+nv.utils.arrayEquals = function(array1, array2) {
     if (array1 === array2)
         return true;
 
@@ -1577,7 +1588,7 @@ nv.utils.arrayEquals = function (array1, array2) {
         return false;
 
     for (var i = 0,
-        l = array1.length; i < l; i++) {
+            l = array1.length; i < l; i++) {
         // Check if we have nested arrays
         if (array1[i] instanceof Array && array2[i] instanceof Array) {
             // recurse into the nested arrays
@@ -1590,6 +1601,93 @@ nv.utils.arrayEquals = function (array1, array2) {
     }
     return true;
 };
+
+/*
+ Check if a point within an arc
+ */
+nv.utils.pointIsInArc = function(pt, ptData, d3Arc) {
+    // Center of the arc is assumed to be 0,0
+    // (pt.x, pt.y) are assumed to be relative to the center
+    var r1 = d3Arc.innerRadius()(ptData), // Note: Using the innerRadius
+        r2 = d3Arc.outerRadius()(ptData),
+        theta1 = d3Arc.startAngle()(ptData),
+        theta2 = d3Arc.endAngle()(ptData);
+
+    var dist = pt.x * pt.x + pt.y * pt.y,
+        angle = Math.atan2(pt.x, -pt.y); // Note: different coordinate system.
+
+    angle = (angle < 0) ? (angle + Math.PI * 2) : angle;
+
+    return (r1 * r1 <= dist) && (dist <= r2 * r2) &&
+        (theta1 <= angle) && (angle <= theta2);
+};
+
+
+/*
+    add specific events occured  by adding vertical line on x-axis 
+    show popup on mouseenter event
+    and hide it on mouseleave event
+
+*/
+nv.utils.addEvents = function(container, response, chart) {
+    var xScale = chart.xAxis.scale(),
+        //calculate the yScale
+        yScale = chart.yAxis.scale(),
+        left = chart.margin().left,
+        top = chart.margin().top,
+        y0 = yScale(chart.yAxis.domain()[0]) + top,
+        y1 = yScale(chart.yAxis.domain()[1]) + top,
+        svg = d3.select((container + " svg")),
+        tooltipDiv;
+
+    $(container).append($("<div>")
+        .attr({
+            "style": "display:none",
+            "id": "hoverText"
+        }));
+
+    tooltipDiv = $("#hoverText", $(container));
+    tooltipDiv.html("");
+
+    for (event in response) {
+        var p = $("<p>").attr("data-event", event),
+            pHtml = "";
+        for (var j = 0; j < response[event].length; j++) {
+            pHtml += response[event][j];
+        }
+        p.html(pHtml);
+        tooltipDiv.append(p);
+        //draw a vertical line on graph
+        svg.append("line")
+            .style({
+                "stroke": "#0e8eff",
+                "stroke-width": "2.5px"
+            })
+            .attr({
+                "x1": (xScale(event) + left),
+                "y1": y0,
+                "x2": (xScale(event) + left),
+                "y2": y1,
+                "data-value": event,
+                "class": function(index, classNames) {
+                    return classNames + " clickable vertical-line";
+                }
+            });
+    }
+    $(container).on("mouseenter", ".vertical-line", function(event) {
+        var y = event.pageY,
+            x = event.pageX,
+            event_date = $(this).attr("data-value");
+        $("#hoverText p", container).hide();
+        $("[data-event = '" + event_date + "']", container).show();
+        $("#hoverText", container).show()
+            .css({
+                position: 'absolute',
+                left: x - 120,
+                top: y - 60
+            });
+    });
+}
 nv.models.axis = function() {
     "use strict";
 
@@ -9899,8 +9997,12 @@ nv.models.multiChart = function() {
                 if (extraValue1BarStacked.length > 0)
                     extraValue1BarStacked = extraValue1BarStacked.reduce(function(a,b){
                         return a.map(function(aVal,i){return {x: aVal.x, y: aVal.y + b[i].y}})
-                    }).concat([{x:0, y:0}]);
+                    });
             }
+            if (dataBars1.length) {
+                extraValue1BarStacked.push({x:0, y:0});
+            }
+            
             var extraValue2BarStacked = [];
             if (bars2.stacked() && dataBars2.length) {
                 var extraValue2BarStacked = dataBars2.filter(function(d){return !d.disabled}).map(function(a){return a.values});
@@ -9908,7 +10010,10 @@ nv.models.multiChart = function() {
                 if (extraValue2BarStacked.length > 0)
                     extraValue2BarStacked = extraValue2BarStacked.reduce(function(a,b){
                         return a.map(function(aVal,i){return {x: aVal.x, y: aVal.y + b[i].y}})
-                    }).concat([{x:0, y:0}]);
+                    });
+            }
+            if (dataBars2.length) {
+                extraValue2BarStacked.push({x:0, y:0});
             }
             
             yScale1 .domain(yDomain1 || d3.extent(d3.merge(series1).concat(extraValue1BarStacked), function(d) { return d.y } ))
@@ -11336,6 +11441,7 @@ nv.models.pie = function() {
         , labelsOutside = false
         , labelType = "key"
         , labelThreshold = .02 //if slice percentage is under this, don't show label
+        , hideOverlapLabels = false //Hide labels that don't fit in slice
         , donut = false
         , title = false
         , growOnHover = true
@@ -11657,6 +11763,44 @@ nv.models.pie = function() {
                         return label;
                     })
                 ;
+
+                if (hideOverlapLabels) {
+                    pieLabels
+                        .each(function (d, i) {
+                            if (!this.getBBox) return;
+                            var bb = this.getBBox(),
+                            center = labelsArc[i].centroid(d);
+                            var topLeft = {
+                              x : center[0] + bb.x,
+                              y : center[1] + bb.y
+                            };
+
+                            var topRight = {
+                              x : topLeft.x + bb.width,
+                              y : topLeft.y
+                            };
+
+                            var bottomLeft = {
+                              x : topLeft.x,
+                              y : topLeft.y + bb.height
+                            };
+
+                            var bottomRight = {
+                              x : topLeft.x + bb.width,
+                              y : topLeft.y + bb.height
+                            };
+
+                            d.visible = nv.utils.pointIsInArc(topLeft, d, arc) &&
+                            nv.utils.pointIsInArc(topRight, d, arc) &&
+                            nv.utils.pointIsInArc(bottomLeft, d, arc) &&
+                            nv.utils.pointIsInArc(bottomRight, d, arc);
+                        })
+                        .style('display', function (d) {
+                            return d.visible ? null : 'none';
+                        })
+                    ;
+                }
+
             }
 
 
@@ -11698,6 +11842,7 @@ nv.models.pie = function() {
         title:      {get: function(){return title;}, set: function(_){title=_;}},
         titleOffset:    {get: function(){return titleOffset;}, set: function(_){titleOffset=_;}},
         labelThreshold: {get: function(){return labelThreshold;}, set: function(_){labelThreshold=_;}},
+        hideOverlapLabels: {get: function(){return hideOverlapLabels;}, set: function(_){hideOverlapLabels=_;}},
         valueFormat:    {get: function(){return valueFormat;}, set: function(_){valueFormat=_;}},
         x:          {get: function(){return getX;}, set: function(_){getX=_;}},
         id:         {get: function(){return id;}, set: function(_){id=_;}},
@@ -14781,7 +14926,7 @@ nv.models.stackedAreaChart = function() {
 
             interactiveLayer.dispatch.on('elementMousemove', function(e) {
                 stacked.clearHighlights();
-                var singlePoint, pointIndex, pointXLocation, allData = [], valueSum = 0, allNullValues = true;
+                var singlePoint, pointIndex, pointXLocation, allData = [], valueSum = 0, allNullValues = true, atleastOnePoint = false;
                 data
                     .filter(function(series, i) {
                         series.seriesIndex = i;
@@ -14793,6 +14938,7 @@ nv.models.stackedAreaChart = function() {
                         var pointYValue = chart.y()(point, pointIndex);
                         if (pointYValue != null && pointYValue > 0) {
                             stacked.highlightPoint(i, pointIndex, true);
+                            atleastOnePoint = true;
                         }
                     
                         // Draw at least one point if all values are zero.

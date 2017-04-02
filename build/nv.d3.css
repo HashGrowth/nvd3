@@ -1,4 +1,4 @@
-/* nvd3 version 1.8.5-dev (https://github.com/novus/nvd3) 2017-02-15 */
+/* nvd3 version 1.8.5-dev (https://github.com/novus/nvd3) 2017-04-02 */
 .nvd3 .nv-axis {
     pointer-events:none;
     opacity: 1;
@@ -340,6 +340,25 @@ svg.nvd3-svg {
     }
 }
 
+/**********
+*  HoverText 
+*/
+#hoverText {
+    position: absolute;
+    top: 50%;
+    left: 55%;
+    -ms-transform: translate(-50%, -50%);
+        transform: translate(-50%, -50%);
+    width: 180px;
+    padding: 5px;
+    background-color: white;
+    border: 1px solid #adadad;
+    border-radius: 3px;
+}
+
+.vertical-line {
+    cursor: pointer;
+}
 .nvd3.nv-ohlcBar .nv-ticks .nv-tick {
     stroke-width: 1px;
 }
