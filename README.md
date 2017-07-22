@@ -1,5 +1,7 @@
 ## `addEvents` in NVD3
 
+[![Join the chat at https://gitter.im/HashGrowth/nvd3](https://badges.gitter.im/HashGrowth/nvd3.svg)](https://gitter.im/HashGrowth/nvd3?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 This repository is extended from [novus/nvd3](https://github.com/novus/nvd3). Before moving ahead,
 we highly recommend to go through [README.md](https://github.com/novus/nvd3/#nvd3---a-reusable-d3-charting-library) of [novus/nvd3](https://github.com/novus/nvd3) for usage and learning NVD3.
 
